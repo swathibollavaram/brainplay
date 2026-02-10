@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>AI Math Quiz</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="container">
+
+  <!-- START SCREEN -->
+  <div id="start-screen">
+    <h1>AI Math Quiz</h1>
+
+    <label>Select number of questions</label>
+    <select id="questionCount">
+      <option value="1">1</option>
+      <option value="5">5</option>
+      <option value="10">10</option>
+      <option value="15">15</option>
+      <option value="20">20</option>
+    </select>
+
+    <button onclick="startQuiz()">Start Quiz</button>
+  </div>
+  <div id="quiz-screen" class="hidden">
+  <h2 id="question"></h2>
+  <input type="number" id="answer" placeholder="Your answer">
+  <button onclick="submitAnswer()">Submit</button>
+</div>
+
+
+  <!-- RESULT SCREEN -->
+  <div id="result-screen" class="hidden">
+    <h1 id="score"></h1>
+    <button onclick="location.reload()">Restart</button>
+  </div>
+
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
