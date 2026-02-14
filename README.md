@@ -73,7 +73,7 @@ ollama pull mistral
 4. Clone and run the project:
 
 ```bash
-git clone https://github.com/YOUR-USERNAME/brainplay.git
+git clone https://github.com/swathibollavaram/brainplay.git
 cd brainplay
 npm install
 node server.js
