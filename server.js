@@ -92,6 +92,29 @@ Example:
   }
 });
 
+app.get("/fun-facts", async (req, res) => {
+  try {
+    const response = await axios.get(
+      "https://opentdb.com/api.php?amount=10&type=multiple"
+    );
+
+    const formatted = response.data.results.map(q => ({
+      question: q.question.replace(/&#039;/g, "'"),
+      answer: q.correct_answer
+    }));
+
+    res.json(formatted);
+
+  } catch {
+    res.json([
+      { question: "Which animal says Moo?", answer: "Cow" },
+      { question: "How many days are in a week?", answer: "7" }
+    ]);
+  }
+});
+
+
+
 app.listen(3001, "0.0.0.0", () => {
   console.log("Server running at http://localhost:3001");
 });

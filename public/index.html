@@ -7,12 +7,11 @@
 <body>
 
 <header class="navbar">
-  <h2>🧠 BrainPlay</h2>
+  <h2 onclick="goHome()" style="cursor:pointer;">🧠 BrainPlay</h2>
   <nav>
-    <a href="#" onclick="showComingSoon()">Home</a>
-    <a href="#" onclick="showComingSoon()">Play</a>
-    <a href="#" onclick="showComingSoon()">Challenges</a>
-
+    <a href="javascript:void(0)" onclick="goHome()">Home</a>
+    <a href="javascript:void(0)" onclick="showComingSoon()">Play</a>
+    <a href="javascript:void(0)" onclick="showComingSoon()">Challenges</a>
   </nav>
 </header>
 
@@ -35,22 +34,33 @@
   </div>
 </section>
 
-<!-- LOADING SCREEN (Separate Section) -->
+<!-- LOADING SCREEN -->
 <section id="loading-screen" class="hidden loading">
-  <h2>🤖 Thinking...</h2>
-  <p>Creating fun challenges for you!</p>
+
+  <h2>🤖 Preparing Fun Fact...</h2>
+
+  <div id="fun-fact-box">
+    <h3>🌟 Fun Fact</h3>
+    <p id="fun-fact-text">Loading...</p>
+  </div>
+
 </section>
 
 <!-- QUIZ SCREEN -->
 <section id="quiz-screen" class="hidden quiz">
+
   <div class="top-bar">
     <span id="progress"></span>
     <span id="timer">⏱ 00:00</span>
   </div>
 
   <h2 id="question"></h2>
-  <input type="number" id="answer" placeholder="Your answer">
-  <button onclick="submitAnswer()">Submit</button>
+
+  <div class="quiz-controls">
+    <input type="number" id="answer" placeholder="Your answer">
+    <button id="submit-btn" onclick="submitAnswer()">Submit</button>
+  </div>
+
 </section>
 
 <!-- RESULT -->
@@ -60,12 +70,13 @@
   <div id="review-section"></div>
   <button onclick="location.reload()">Play Again</button>
 </section>
+
+<!-- COMING SOON -->
 <section id="coming-soon" class="hidden coming">
   <h2>🚧 Feature Coming Soon!</h2>
   <p>We are working hard to bring this to you.</p>
   <p>Please check back soon 😊</p>
 </section>
-
 
 <script src="script.js"></script>
 

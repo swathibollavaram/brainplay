@@ -4,48 +4,92 @@ let index = 0;
 let score = 0;
 let startTime;
 let timerInterval;
+let funFacts = [];
+let funFactTimer;
+let aiReady = false;
 
-// Show mode selection
-function showModeSelection() {
-  document.querySelector(".hero").classList.add("hidden");
-  document.getElementById("mode-selection").classList.remove("hidden");
-}
-
-// Start game
+// Start Game
 async function startGame(mode) {
 
-  // Reset values for new game
-  questions = [];
-  userAnswers = [];
+  aiReady = false;
   index = 0;
   score = 0;
+  userAnswers = [];
 
   document.getElementById("mode-selection").classList.add("hidden");
   document.getElementById("loading-screen").classList.remove("hidden");
 
-  try {
-    const res = await fetch("/questions", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ mode, count: 10 })
-    });
+  startFunFacts();
 
-    questions = await res.json();
+  // Load Ollama in background
+  fetch("/questions", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ mode, count: 10 })
+  })
+  .then(res => res.json())
+  .then(aiData => {
 
-    // Hide loading and show quiz
-    document.getElementById("loading-screen").classList.add("hidden");
-    document.getElementById("quiz-screen").classList.remove("hidden");
+    if (aiData && aiData.length) {
+      aiReady = true;
+      stopFunFacts();
 
-    startTimer();
-    showQuestion();
+      questions = aiData;
+      index = 0;
 
-  } catch (error) {
-    document.getElementById("loading-screen").innerHTML =
-      "<h2>⚠️ Failed to load questions. Please try again.</h2>";
-  }
+      document.getElementById("loading-screen").classList.add("hidden");
+      document.getElementById("quiz-screen").classList.remove("hidden");
+
+      startTimer();
+      showQuestion();
+    }
+  });
 }
 
-// Display question
+// FUN FACTS FROM API
+async function startFunFacts() {
+
+  try {
+    const res = await fetch("/fun-facts");
+    funFacts = await res.json();
+  } catch {
+    funFacts = [
+      { question: "Which animal says Moo?", answer: "Cow" }
+    ];
+  }
+
+  showFunFact();
+
+  funFactTimer = setInterval(() => {
+    if (!aiReady) showFunFact();
+  }, 10000);
+}
+
+function showFunFact() {
+
+  if (!funFacts.length) return;
+
+  const random = funFacts[Math.floor(Math.random() * funFacts.length)];
+
+  document.getElementById("fun-fact-text").innerHTML = `
+    🤔 ${random.question}
+    <br><br>
+    <span id="fact-answer" style="opacity:0;">
+      💡 ${random.answer}
+    </span>
+  `;
+
+  setTimeout(() => {
+    const ans = document.getElementById("fact-answer");
+    if (ans) ans.style.opacity = 1;
+  }, 5000);
+}
+
+function stopFunFacts() {
+  clearInterval(funFactTimer);
+}
+
+// QUIZ
 function showQuestion() {
   document.getElementById("progress").innerText =
     `Level ${index + 1} of ${questions.length}`;
@@ -56,12 +100,13 @@ function showQuestion() {
   document.getElementById("answer").value = "";
 }
 
-// Submit answer
+// Submit
 function submitAnswer() {
-  const userAnswer = Number(document.getElementById("answer").value);
+
+  const userAnswer = document.getElementById("answer").value.trim();
   userAnswers.push(userAnswer);
 
-  if (userAnswer === questions[index].answer) {
+  if (userAnswer == questions[index].answer) {
     score++;
   }
 
@@ -74,7 +119,7 @@ function submitAnswer() {
   }
 }
 
-// Start timer
+// Timer
 function startTimer() {
   startTime = new Date();
   timerInterval = setInterval(() => {
@@ -84,13 +129,9 @@ function startTimer() {
   }, 1000);
 }
 
-// End quiz
+// End Quiz
 function endQuiz() {
   clearInterval(timerInterval);
-
-  const totalSeconds = Math.floor((new Date() - startTime) / 1000);
-  const minutes = Math.floor(totalSeconds / 60);
-  seconds = totalSeconds % 60;
 
   document.getElementById("quiz-screen").classList.add("hidden");
   document.getElementById("result-screen").classList.remove("hidden");
@@ -98,12 +139,58 @@ function endQuiz() {
   document.getElementById("final-score").innerText =
     `⭐ Score: ${score} / ${questions.length}`;
 
-  document.getElementById("time-taken").innerText =
-    `Time Taken: ${minutes} minutes and ${seconds} seconds`;
-
-  showReview();
+  showReview();   // 👈 THIS WAS MISSING
 }
+
+// ENTER KEY
+document.addEventListener("DOMContentLoaded", () => {
+  const answerInput = document.getElementById("answer");
+
+  if (answerInput) {
+    answerInput.addEventListener("keypress", function (e) {
+      if (e.key === "Enter") {
+        submitAnswer();
+      }
+    });
+  }
+});
+
+function showModeSelection() {
+  document.querySelector(".hero").classList.add("hidden");
+  document.getElementById("mode-selection").classList.remove("hidden");
+}
+
+function goHome() {
+
+  document.querySelector(".hero").classList.remove("hidden");
+  document.getElementById("mode-selection").classList.add("hidden");
+  document.getElementById("quiz-screen").classList.add("hidden");
+  document.getElementById("result-screen").classList.add("hidden");
+  document.getElementById("loading-screen").classList.add("hidden");
+  document.getElementById("coming-soon").classList.add("hidden");
+
+  index = 0;
+  score = 0;
+  userAnswers = [];
+}
+
+
+function showComingSoon() {
+
+  // Hide all sections
+  document.querySelector(".hero").classList.add("hidden");
+  document.getElementById("mode-selection").classList.add("hidden");
+  document.getElementById("quiz-screen").classList.add("hidden");
+  document.getElementById("result-screen").classList.add("hidden");
+  document.getElementById("loading-screen").classList.add("hidden");
+
+  // Show only coming soon
+  document.getElementById("coming-soon").classList.remove("hidden");
+}
+
+
 function showReview() {
+
   const reviewSection = document.getElementById("review-section");
   reviewSection.innerHTML = "";
 
@@ -112,7 +199,7 @@ function showReview() {
     const userAns = userAnswers[i];
     const correctAns = q.answer;
 
-    const isCorrect = userAns === correctAns;
+    const isCorrect = userAns == correctAns;
 
     const div = document.createElement("div");
     div.classList.add("review-item");
@@ -122,7 +209,7 @@ function showReview() {
       <p>
         Your Answer:
         <span class="${isCorrect ? 'correct' : 'wrong'}">
-          ${userAns}
+          ${userAns || "No Answer"}
         </span>
       </p>
       <p>
@@ -134,15 +221,5 @@ function showReview() {
     `;
 
     reviewSection.appendChild(div);
-  });
-}
-
-function showComingSoon() {
-  hideAllSections();
-  document.getElementById("coming-soon").classList.remove("hidden");
-}
-function hideAllSections() {
-  document.querySelectorAll("section").forEach(sec => {
-    sec.classList.add("hidden");
   });
 }
