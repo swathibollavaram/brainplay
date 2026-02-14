@@ -87,7 +87,7 @@ node -v
 npm -v
 ollama serve  # run in a terminal and keep it open
 ollama pull mistral
-git clone https://github.com/YOUR-USERNAME/brainplay.git
+git clone https://github.com/swathibollavaram/brainplay.git
 cd brainplay
 npm install
 node server.js
