@@ -1,43 +1,73 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>AI Math Quiz</title>
+  <title>BrainPlay</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-<div class="container">
+<header class="navbar">
+  <h2>🧠 BrainPlay</h2>
+  <nav>
+    <a href="#" onclick="showComingSoon()">Home</a>
+    <a href="#" onclick="showComingSoon()">Play</a>
+    <a href="#" onclick="showComingSoon()">Challenges</a>
 
-  <!-- START SCREEN -->
-  <div id="start-screen">
-    <h1>AI Math Quiz</h1>
+  </nav>
+</header>
 
-    <label>Select number of questions</label>
-    <select id="questionCount">
-      <option value="1">1</option>
-      <option value="5">5</option>
-      <option value="10">10</option>
-      <option value="15">15</option>
-      <option value="20">20</option>
-    </select>
+<!-- HERO -->
+<section class="hero">
+  <h1>Solve. Think. Grow.</h1>
+  <p>Fun challenges to boost your brain power!</p>
+  <button onclick="showModeSelection()">Start Playing 🚀</button>
+</section>
 
-    <button onclick="startQuiz()">Start Quiz</button>
+<!-- MODE SELECTION -->
+<section id="mode-selection" class="hidden modes">
+  <h2>Choose Your Challenge</h2>
+
+  <div class="mode-grid">
+    <div class="mode-card" onclick="startGame('math')">🧮 Math</div>
+    <div class="mode-card" onclick="startGame('logic')">🧠 Logic</div>
+    <div class="mode-card" onclick="startGame('pattern')">🔷 Pattern</div>
+    <div class="mode-card" onclick="startGame('word')">📖 Word</div>
   </div>
-  <div id="quiz-screen" class="hidden">
+</section>
+
+<!-- LOADING SCREEN (Separate Section) -->
+<section id="loading-screen" class="hidden loading">
+  <h2>🤖 Thinking...</h2>
+  <p>Creating fun challenges for you!</p>
+</section>
+
+<!-- QUIZ SCREEN -->
+<section id="quiz-screen" class="hidden quiz">
+  <div class="top-bar">
+    <span id="progress"></span>
+    <span id="timer">⏱ 00:00</span>
+  </div>
+
   <h2 id="question"></h2>
   <input type="number" id="answer" placeholder="Your answer">
   <button onclick="submitAnswer()">Submit</button>
-</div>
+</section>
 
+<!-- RESULT -->
+<section id="result-screen" class="hidden result">
+  <h2 id="final-score"></h2>
+  <h3 id="time-taken"></h3>
+  <div id="review-section"></div>
+  <button onclick="location.reload()">Play Again</button>
+</section>
+<section id="coming-soon" class="hidden coming">
+  <h2>🚧 Feature Coming Soon!</h2>
+  <p>We are working hard to bring this to you.</p>
+  <p>Please check back soon 😊</p>
+</section>
 
-  <!-- RESULT SCREEN -->
-  <div id="result-screen" class="hidden">
-    <h1 id="score"></h1>
-    <button onclick="location.reload()">Restart</button>
-  </div>
-
-</div>
 
 <script src="script.js"></script>
+
 </body>
 </html>

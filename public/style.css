@@ -1,29 +1,133 @@
 body {
-  font-family: Arial, sans-serif;
-  background: #f4f6f8;
-}
-
-.container {
-  width: 400px;
-  margin: 100px auto;
-  padding: 20px;
-  background: white;
+  margin: 0;
+  font-family: Comic Sans MS, cursive;
+  background: linear-gradient(135deg,#6dd5fa,#2980b9);
+  color: white;
   text-align: center;
-  border-radius: 8px;
 }
 
+/* NAVBAR */
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  padding: 15px 30px;
+  background: #ff7a18;
+}
+
+.navbar a {
+  margin-left: 15px;
+  color: white;
+  text-decoration: none;
+}
+
+/* HERO */
+.hero {
+  padding: 60px;
+}
+
+.hero button {
+  padding: 15px 25px;
+  font-size: 18px;
+  background: #ffcc00;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+}
+
+/* MODE SECTION */
+.modes {
+  padding: 40px;
+}
+
+.mode-grid {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+}
+
+.mode-card {
+  background: white;
+  color: black;
+  padding: 20px;
+  border-radius: 12px;
+  cursor: pointer;
+  width: 120px;
+}
+
+.mode-card:hover {
+  transform: scale(1.05);
+  transition: 0.2s;
+}
+
+/* QUIZ + RESULT */
+.quiz, .result {
+  padding: 40px;
+}
+
+/* BUTTON */
 button {
   margin-top: 15px;
-  padding: 10px 20px;
-  font-size: 16px;
 }
 
-input, select {
-  width: 80%;
-  padding: 8px;
-  margin-top: 10px;
+/* LOADING */
+.loading {
+  padding: 80px;
+  font-size: 24px;
+  animation: pulse 1.5s infinite;
 }
 
+@keyframes pulse {
+  0% { opacity: 0.3; }
+  50% { opacity: 1; }
+  100% { opacity: 0.3; }
+}
+
+/* HIDDEN */
 .hidden {
   display: none;
+}
+
+.correct {
+  color: green;
+  font-weight: bold;
+}
+
+.wrong {
+  color: red;
+  font-weight: bold;
+}
+
+.review-item {
+  margin-top: 15px;
+  padding: 10px;
+  background: white;
+  color: black;
+  border-radius: 8px;
+}
+/* Answer input box */
+#answer {
+  width: 250px;
+  height: 50px;
+  font-size: 20px;
+  border-radius: 10px;
+  border: none;
+  padding: 5px;
+  text-align: center;
+  margin-top: 15px;
+}
+
+/* Submit button */
+.quiz button {
+  width: 200px;
+  height: 50px;
+  font-size: 18px;
+  background: #ffcc00;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  margin-top: 20px;
+}
+.coming {
+  padding: 60px;
+  font-size: 20px;
 }
