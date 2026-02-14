@@ -18,14 +18,13 @@ async function startGame(mode) {
   score = 0;
   userAnswers = [];
 
-  // STOP OLD TIMERS (important)
   clearInterval(timerInterval);
   clearTimeout(funFactTimer);
   clearTimeout(revealTimer);
 
-  // RESET TIMER DISPLAY
   document.getElementById("timer").innerText = "⏱ 0s";
 
+  document.querySelector(".hero").classList.add("hidden");
   document.getElementById("mode-selection").classList.add("hidden");
   document.getElementById("loading-screen").classList.remove("hidden");
 
@@ -71,7 +70,6 @@ async function startFunFacts() {
   showTimedFunFact();
 }
 
-
 function showTimedFunFact() {
 
   if (!funFacts.length || aiReady) return;
@@ -87,18 +85,15 @@ function showTimedFunFact() {
     </span>
   `;
 
-  // Reveal answer after 10 sec
   revealTimer = setTimeout(() => {
     const ans = document.getElementById("fact-answer");
     if (ans) ans.style.opacity = 1;
   }, 10000);
 
-  // Next fact after 15 sec
   funFactTimer = setTimeout(() => {
     if (!aiReady) showTimedFunFact();
   }, 15000);
 }
-
 
 function stopFunFacts() {
   clearTimeout(funFactTimer);
@@ -118,12 +113,10 @@ function showQuestion() {
   const answerBox = document.getElementById("answer");
   answerBox.value = "";
 
-  // 👇 AUTO FOCUS after fun facts / next question
   setTimeout(() => {
     answerBox.focus();
   }, 100);
 }
-
 
 
 // ================= SUBMIT =================
@@ -149,7 +142,7 @@ function submitAnswer() {
 // ================= TIMER =================
 function startTimer() {
 
-  clearInterval(timerInterval);   // prevent duplicate timers
+  clearInterval(timerInterval);
 
   startTime = new Date();
 
@@ -178,11 +171,10 @@ function endQuiz() {
     `⭐ Score: ${score} / ${questions.length}`;
 
   document.getElementById("time-taken").innerText =
-    `⏱ Time Taken: ${minutes} minutes and ${seconds} seconds`;
+    `⏱ Time Taken: ${minutes} min ${seconds} sec`;
 
   showReview();
 }
-
 
 
 // ================= REVIEW =================
@@ -195,7 +187,6 @@ function showReview() {
 
     const userAns = userAnswers[i];
     const correctAns = q.answer;
-
     const isCorrect = userAns == correctAns;
 
     const div = document.createElement("div");
@@ -203,37 +194,13 @@ function showReview() {
 
     div.innerHTML = `
       <p><strong>Q${i + 1}:</strong> ${q.question}</p>
-      <p>
-        Your Answer:
-        <span class="${isCorrect ? 'correct' : 'wrong'}">
-          ${userAns || "No Answer"}
-        </span>
-      </p>
-      <p>
-        Correct Answer:
-        <span class="correct">
-          ${correctAns}
-        </span>
-      </p>
+      <p>Your Answer: <span class="${isCorrect ? 'correct' : 'wrong'}">${userAns || "No Answer"}</span></p>
+      <p>Correct Answer: <span class="correct">${correctAns}</span></p>
     `;
 
     reviewSection.appendChild(div);
   });
 }
-
-
-// ================= ENTER KEY =================
-document.addEventListener("DOMContentLoaded", () => {
-  const answerInput = document.getElementById("answer");
-
-  if (answerInput) {
-    answerInput.addEventListener("keypress", function (e) {
-      if (e.key === "Enter") {
-        submitAnswer();
-      }
-    });
-  }
-});
 
 
 // ================= NAVIGATION =================
@@ -274,3 +241,34 @@ function showComingSoon() {
 
   document.getElementById("coming-soon").classList.remove("hidden");
 }
+
+
+// ================= PLAY AGAIN =================
+function playAgain() {
+
+  clearInterval(timerInterval);
+  stopFunFacts();
+
+  document.getElementById("result-screen").classList.add("hidden");
+  document.getElementById("mode-selection").classList.remove("hidden");
+
+  index = 0;
+  score = 0;
+  userAnswers = [];
+
+  document.getElementById("timer").innerText = "⏱ 0s";
+}
+
+
+// ================= ENTER KEY =================
+document.addEventListener("DOMContentLoaded", () => {
+  const answerInput = document.getElementById("answer");
+
+  if (answerInput) {
+    answerInput.addEventListener("keypress", function (e) {
+      if (e.key === "Enter") {
+        submitAnswer();
+      }
+    });
+  }
+});
