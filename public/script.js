@@ -3,12 +3,14 @@ let userAnswers = [];
 let index = 0;
 let score = 0;
 let startTime;
-let timerInterval;
+let timerInterval = null;
 let funFacts = [];
-let funFactTimer;
+let funFactTimer = null;
+let revealTimer = null;
 let aiReady = false;
 
-// Start Game
+
+// ================= START GAME =================
 async function startGame(mode) {
 
   aiReady = false;
@@ -16,12 +18,19 @@ async function startGame(mode) {
   score = 0;
   userAnswers = [];
 
+  // STOP OLD TIMERS (important)
+  clearInterval(timerInterval);
+  clearTimeout(funFactTimer);
+  clearTimeout(revealTimer);
+
+  // RESET TIMER DISPLAY
+  document.getElementById("timer").innerText = "⏱ 0s";
+
   document.getElementById("mode-selection").classList.add("hidden");
   document.getElementById("loading-screen").classList.remove("hidden");
 
   startFunFacts();
 
-  // Load Ollama in background
   fetch("/questions", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
@@ -46,7 +55,8 @@ async function startGame(mode) {
   });
 }
 
-// FUN FACTS FROM API
+
+// ================= FUN FACTS =================
 async function startFunFacts() {
 
   try {
@@ -58,49 +68,65 @@ async function startFunFacts() {
     ];
   }
 
-  showFunFact();
-
-  funFactTimer = setInterval(() => {
-    if (!aiReady) showFunFact();
-  }, 10000);
+  showTimedFunFact();
 }
 
-function showFunFact() {
 
-  if (!funFacts.length) return;
+function showTimedFunFact() {
+
+  if (!funFacts.length || aiReady) return;
 
   const random = funFacts[Math.floor(Math.random() * funFacts.length)];
+  const factText = document.getElementById("fun-fact-text");
 
-  document.getElementById("fun-fact-text").innerHTML = `
+  factText.innerHTML = `
     🤔 ${random.question}
     <br><br>
-    <span id="fact-answer" style="opacity:0;">
+    <span id="fact-answer" style="opacity:0; font-weight:bold;">
       💡 ${random.answer}
     </span>
   `;
 
-  setTimeout(() => {
+  // Reveal answer after 10 sec
+  revealTimer = setTimeout(() => {
     const ans = document.getElementById("fact-answer");
     if (ans) ans.style.opacity = 1;
-  }, 5000);
+  }, 10000);
+
+  // Next fact after 15 sec
+  funFactTimer = setTimeout(() => {
+    if (!aiReady) showTimedFunFact();
+  }, 15000);
 }
+
 
 function stopFunFacts() {
-  clearInterval(funFactTimer);
+  clearTimeout(funFactTimer);
+  clearTimeout(revealTimer);
 }
 
-// QUIZ
+
+// ================= QUIZ =================
 function showQuestion() {
+
   document.getElementById("progress").innerText =
     `Level ${index + 1} of ${questions.length}`;
 
   document.getElementById("question").innerText =
     questions[index].question;
 
-  document.getElementById("answer").value = "";
+  const answerBox = document.getElementById("answer");
+  answerBox.value = "";
+
+  // 👇 AUTO FOCUS after fun facts / next question
+  setTimeout(() => {
+    answerBox.focus();
+  }, 100);
 }
 
-// Submit
+
+
+// ================= SUBMIT =================
 function submitAnswer() {
 
   const userAnswer = document.getElementById("answer").value.trim();
@@ -119,9 +145,14 @@ function submitAnswer() {
   }
 }
 
-// Timer
+
+// ================= TIMER =================
 function startTimer() {
+
+  clearInterval(timerInterval);   // prevent duplicate timers
+
   startTime = new Date();
+
   timerInterval = setInterval(() => {
     const now = new Date();
     const seconds = Math.floor((now - startTime) / 1000);
@@ -129,9 +160,16 @@ function startTimer() {
   }, 1000);
 }
 
-// End Quiz
+
+// ================= END QUIZ =================
 function endQuiz() {
+
   clearInterval(timerInterval);
+
+  const endTime = new Date();
+  const totalSeconds = Math.floor((endTime - startTime) / 1000);
+  const minutes = Math.floor(totalSeconds / 60);
+  const seconds = totalSeconds % 60;
 
   document.getElementById("quiz-screen").classList.add("hidden");
   document.getElementById("result-screen").classList.remove("hidden");
@@ -139,56 +177,15 @@ function endQuiz() {
   document.getElementById("final-score").innerText =
     `⭐ Score: ${score} / ${questions.length}`;
 
-  showReview();   // 👈 THIS WAS MISSING
-}
+  document.getElementById("time-taken").innerText =
+    `⏱ Time Taken: ${minutes} minutes and ${seconds} seconds`;
 
-// ENTER KEY
-document.addEventListener("DOMContentLoaded", () => {
-  const answerInput = document.getElementById("answer");
-
-  if (answerInput) {
-    answerInput.addEventListener("keypress", function (e) {
-      if (e.key === "Enter") {
-        submitAnswer();
-      }
-    });
-  }
-});
-
-function showModeSelection() {
-  document.querySelector(".hero").classList.add("hidden");
-  document.getElementById("mode-selection").classList.remove("hidden");
-}
-
-function goHome() {
-
-  document.querySelector(".hero").classList.remove("hidden");
-  document.getElementById("mode-selection").classList.add("hidden");
-  document.getElementById("quiz-screen").classList.add("hidden");
-  document.getElementById("result-screen").classList.add("hidden");
-  document.getElementById("loading-screen").classList.add("hidden");
-  document.getElementById("coming-soon").classList.add("hidden");
-
-  index = 0;
-  score = 0;
-  userAnswers = [];
+  showReview();
 }
 
 
-function showComingSoon() {
 
-  // Hide all sections
-  document.querySelector(".hero").classList.add("hidden");
-  document.getElementById("mode-selection").classList.add("hidden");
-  document.getElementById("quiz-screen").classList.add("hidden");
-  document.getElementById("result-screen").classList.add("hidden");
-  document.getElementById("loading-screen").classList.add("hidden");
-
-  // Show only coming soon
-  document.getElementById("coming-soon").classList.remove("hidden");
-}
-
-
+// ================= REVIEW =================
 function showReview() {
 
   const reviewSection = document.getElementById("review-section");
@@ -222,4 +219,58 @@ function showReview() {
 
     reviewSection.appendChild(div);
   });
+}
+
+
+// ================= ENTER KEY =================
+document.addEventListener("DOMContentLoaded", () => {
+  const answerInput = document.getElementById("answer");
+
+  if (answerInput) {
+    answerInput.addEventListener("keypress", function (e) {
+      if (e.key === "Enter") {
+        submitAnswer();
+      }
+    });
+  }
+});
+
+
+// ================= NAVIGATION =================
+function showModeSelection() {
+  document.querySelector(".hero").classList.add("hidden");
+  document.getElementById("mode-selection").classList.remove("hidden");
+}
+
+function goHome() {
+
+  clearInterval(timerInterval);
+  stopFunFacts();
+
+  document.querySelector(".hero").classList.remove("hidden");
+  document.getElementById("mode-selection").classList.add("hidden");
+  document.getElementById("quiz-screen").classList.add("hidden");
+  document.getElementById("result-screen").classList.add("hidden");
+  document.getElementById("loading-screen").classList.add("hidden");
+  document.getElementById("coming-soon").classList.add("hidden");
+
+  document.getElementById("timer").innerText = "⏱ 0s";
+
+  index = 0;
+  score = 0;
+  userAnswers = [];
+}
+
+function showComingSoon() {
+
+  clearInterval(timerInterval);
+  stopFunFacts();
+
+  document.querySelector(".hero").classList.add("hidden");
+  document.getElementById("mode-selection").classList.add("hidden");
+  document.getElementById("quiz-screen").classList.add("hidden");
+  document.getElementById("result-screen").classList.add("hidden");
+  document.getElementById("loading-screen").classList.add("hidden");
+
+  document.getElementById("coming-soon").classList.remove("hidden");
 }
