@@ -189,21 +189,30 @@ Sam had 5 marbles and lost 2 while playing. How many remain?
 Example:
 If Meena drinks 1 glass of milk in the morning and 1 at night, how many in a day?
 
-Rules:
+STRICT RULES:
 • Keep story short
 • Use simple words
-• Answer must be a number or one word
-• No tricky math
-• No long sentences
 • No emojis
+• Answer must ALWAYS be:
+   - a number (without quotes)
+   OR
+   - a word INSIDE DOUBLE QUOTES
 
-Return ONLY JSON like:
+Examples of valid answers:
+"more"
+"less"
+"yes"
+"no"
+
+Return ONLY valid JSON.
+
+Example:
 [
+ {"question":"A dog has 3 bones and a cat has 2. Who has more?","answer":"dog"},
  {"question":"Tom has 4 chocolates and gives 1 away. How many left?","answer":3}
 ]
 `;
 }
-
 
   try {
 
