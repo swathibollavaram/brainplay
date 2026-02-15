@@ -11,26 +11,29 @@ app.post("/questions", async (req, res) => {
   const mode = req.body.mode || "math";
   const mathConfig = req.body.mathConfig || {};
 
-
-  // Limit count to prevent AI truncation
   if (count > 10) count = 10;
 
-  // Mode-based prompt
+  console.log("\n📩 New request received from UI");
+  console.log("➡️ Mode:", mode);
+
   let typePrompt = "";
 
+  // ================= MATH =================
   if (mode === "math") {
 
-  const digits = mathConfig.digits || 2;
-  const decimals = mathConfig.decimals;
-  const negative = mathConfig.negative;
+    console.log("🧮 Math Config:", mathConfig);
 
-  let rangeText = "";
+    const digits = mathConfig.digits || 2;
+    const decimals = mathConfig.decimals;
+    const negative = mathConfig.negative;
 
-  if (digits == 2) rangeText = "Use numbers from 10 to 99";
-  if (digits == 3) rangeText = "Use numbers from 100 to 999";
-  if (digits == 4) rangeText = "Use numbers from 1000 to 9999";
+    let rangeText = "";
 
-  typePrompt = `
+    if (digits == 2) rangeText = "Use numbers from 10 to 99";
+    if (digits == 3) rangeText = "Use numbers from 100 to 999";
+    if (digits == 4) rangeText = "Use numbers from 1000 to 9999";
+
+    typePrompt = `
 Generate arithmetic questions for children.
 
 Rules:
@@ -46,111 +49,27 @@ Return ONLY JSON:
  {"question":"45 + 22","answer":67}
 ]
 `;
-}
- else if (mode === "logic") {
-  typePrompt = `
-VERY SIMPLE logical thinking questions for children aged 6–10.
+  }
 
-Use:
-• daily life situations
-• fun comparisons
-• ordering
-• shapes
-• animals
-• easy reasoning
+  // ================= LOGIC =================
+  else if (mode === "logic") {
+    typePrompt = `VERY SIMPLE logical thinking questions for children aged 6–10.`;
+  }
 
-Avoid:
-• puzzles that need deep thinking
-• tricky riddles
-• adult logic
-• abstract concepts
-• long stories
+  // ================= PATTERN =================
+  else if (mode === "pattern") {
+    typePrompt = `VERY SIMPLE pattern questions for children aged 6–10.`;
+  }
 
-Examples:
-Who is taller: a cat or an elephant?
-Which is heavier: a feather or a book?
-If you have 3 apples and eat 1, how many are left?
-Which comes first: morning or night?
-Which is faster: a turtle or a rabbit?
-
-Keep questions:
-• short
-• fun
-• easy to imagine
-• one-line only
-`;
-} else if (mode === "pattern") {
-  typePrompt = `
-VERY SIMPLE pattern questions for children aged 6–10.
-
-Use:
-• colors
-• shapes
-• numbers (very small)
-• everyday objects
-• animals
-
-Focus on:
-• what comes next
-• what is missing
-• repeating patterns
-
-Avoid:
-• complex sequences
-• tricky logic
-• long questions
-• abstract symbols
-
-Examples:
-Red, Blue, Red, Blue, ?
-Circle, Square, Circle, Square, ?
-🐶 🐱 🐶 🐱 ?
-1, 2, 1, 2, ?
-
-Keep questions:
-• visual
-• fun
-• short
-• easy to imagine
-
-Answer should be one word or number.
-`;
-} else if (mode === "word") {
-  typePrompt = `
-SHORT and FUN story-based questions for children aged 6–10.
-
-Use:
-• animals
-• toys
-• fruits
-• school
-• daily life
-
-Make stories:
-• 1 or 2 lines only
-• happy and playful
-• very easy to understand
-
-Avoid:
-• long problems
-• tricky math
-• confusing words
-
-Examples:
-Riya has 2 apples and gets 1 more. How many now?
-Tom has 3 balloons. One flies away. How many left?
-A dog has 4 bones and eats 1. How many remain?
-
-Keep:
-• simple
-• cheerful
-• child-friendly
-
-Answer should be a number or one word.
-`;
-}
+  // ================= WORD =================
+  else if (mode === "word") {
+    typePrompt = `SHORT and FUN story-based questions for children aged 6–10.`;
+  }
 
   try {
+
+    console.log("🚀 Sending request to Ollama...");
+
     const response = await axios.post(
       "http://localhost:11434/api/generate",
       {
@@ -160,15 +79,11 @@ You are a JSON generator.
 
 STRICT RULES:
 - Output ONLY valid JSON
-- Do NOT explain anything
-- Do NOT add extra text
-- Do NOT add notes
-- Do NOT add trailing commas
-- Do NOT add markdown
-- Do NOT add comments
+- No explanation
+- No markdown
+- No comments
 
-Return ONLY this format:
-
+Return ONLY:
 [
  {"question":"2 + 3","answer":5}
 ]
@@ -183,6 +98,11 @@ ${typePrompt}
 
     const raw = response.data.response;
 
+    console.log("✅ Response received from Ollama");
+    console.log("🧠 Raw response length:", raw.length);
+
+    console.log("🔍 Extracting JSON from response...");
+
     const start = raw.indexOf("[");
     const end = raw.lastIndexOf("]") + 1;
 
@@ -192,7 +112,9 @@ ${typePrompt}
 
     const questions = JSON.parse(raw.substring(start, end));
 
-    // Validate output
+    console.log("🎯 JSON parsing successful");
+    console.log("📊 Total questions generated:", questions.length);
+
     if (!Array.isArray(questions) || questions.length === 0) {
       throw new Error("AI returned empty questions");
     }
@@ -200,12 +122,15 @@ ${typePrompt}
     res.json(questions);
 
   } catch (err) {
-    console.error("❌ Ollama error:", err.message);
+    console.error("❌ Ollama error occurred!");
+    console.error("Reason:", err.message);
+
     res.status(500).json({
       error: "AI failed to generate questions"
     });
   }
 });
+
 
 app.get("/fun-facts", async (req, res) => {
   try {
