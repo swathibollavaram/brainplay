@@ -79,14 +79,131 @@ Return ONLY valid JSON in this format:
   }
 
   // ================= PATTERN =================
-  else if (mode === "pattern") {
-    typePrompt = `VERY SIMPLE pattern questions for children aged 6–10.`;
-  }
+else if (mode === "pattern") {
+  typePrompt = `
+Generate FUN pattern thinking questions for children aged 6–10.
+
+Goal:
+Improve observation + thinking skills.
+
+Do NOT generate math problems.
+
+Use different types of patterns:
+
+1. Repeating patterns
+Example:
+Red, Blue, Red, Blue, ?
+Answer: Red
+
+2. Growing patterns
+Example:
+2, 4, 6, ?
+Answer: 8
+
+3. Alternating logic
+Example:
+Cat, Dog, Dog, Cat, ?
+Answer: Cat
+
+4. Missing middle
+Example:
+Sun, ?, Sun
+Answer: Moon
+
+5. Opposites
+Example:
+Hot, Cold, Hot, ?
+Answer: Cold
+
+6. Category pattern
+Example:
+Apple, Mango, Apple, ?
+Answer: Mango
+
+7. Direction pattern
+Example:
+Left, Right, Left, ?
+Answer: Right
+
+8. Size pattern
+Example:
+Big, Small, Bigger, Smaller, ?
+Answer: Biggest
+
+Rules:
+• Keep questions very short
+• Answer must be one word or number
+• No emojis
+• No math operations like + - * /
+• Easy to imagine
+• Easy to type
+
+Return ONLY JSON like:
+[
+ {"question":"Red, Blue, Red, Blue, ?","answer":"Red"}
+]
+`;
+}
+
 
   // ================= WORD =================
   else if (mode === "word") {
-    typePrompt = `SHORT and FUN story-based questions for children aged 6–10.`;
-  }
+  typePrompt = `
+Generate FUN real-life story questions for children aged 6–10.
+
+Goal:
+Improve imagination + understanding.
+
+Use:
+• toys
+• animals
+• school
+• fruits
+• games
+• friends
+• daily activities
+
+Stories should be:
+• 1 or 2 lines only
+• simple and happy
+• easy to visualize
+
+Question types:
+1. Counting
+Example:
+Riya has 2 balloons and gets 1 more. How many now?
+
+2. Sharing
+Example:
+Tom has 4 chocolates and gives 1 to his friend. How many left?
+
+3. Comparison
+Example:
+A dog has 3 bones and a cat has 2. Who has more?
+
+4. Situation thinking
+Example:
+Sam had 5 marbles and lost 2 while playing. How many remain?
+
+5. Everyday logic
+Example:
+If Meena drinks 1 glass of milk in the morning and 1 at night, how many in a day?
+
+Rules:
+• Keep story short
+• Use simple words
+• Answer must be a number or one word
+• No tricky math
+• No long sentences
+• No emojis
+
+Return ONLY JSON like:
+[
+ {"question":"Tom has 4 chocolates and gives 1 away. How many left?","answer":3}
+]
+`;
+}
+
 
   try {
 
