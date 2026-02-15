@@ -184,3 +184,7 @@ body {
 .loading {
   gap: 20px;
 }
+#math-settings select {
+  border-radius: 8px;
+  border: none;
+}

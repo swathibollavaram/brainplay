@@ -8,51 +8,27 @@ let funFacts = [];
 let funFactTimer = null;
 let revealTimer = null;
 let aiReady = false;
+let mathConfig = {
+  digits: 2,
+  decimals: false,
+  negative: false
+};
+
 
 
 // ================= START GAME =================
 async function startGame(mode) {
 
-  aiReady = false;
-  index = 0;
-  score = 0;
-  userAnswers = [];
+  if (mode === "math") {
+    showMathSettings();
+    return;
+  }
 
-  clearInterval(timerInterval);
-  clearTimeout(funFactTimer);
-  clearTimeout(revealTimer);
-
-  document.getElementById("timer").innerText = "⏱ 0s";
-
-  document.querySelector(".hero").classList.add("hidden");
-  document.getElementById("mode-selection").classList.add("hidden");
-  document.getElementById("loading-screen").classList.remove("hidden");
-
-  startFunFacts();
-
-  fetch("/questions", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ mode, count: 10 })
-  })
-  .then(res => res.json())
-  .then(aiData => {
-
-    if (aiData && aiData.length) {
-      aiReady = true;
-      stopFunFacts();
-
-      questions = aiData;
-      index = 0;
-
-      document.getElementById("loading-screen").classList.add("hidden");
-      document.getElementById("quiz-screen").classList.remove("hidden");
-
-      startTimer();
-      showQuestion();
-    }
-  });
+  startQuiz(mode);
 }
+
+
+
 
 
 // ================= FUN FACTS =================
@@ -272,3 +248,90 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 });
+
+
+function startMathWithSettings() {
+
+  mathConfig.digits = parseInt(document.getElementById("digit-select").value) || 2;
+  mathConfig.decimals = document.getElementById("include-decimals").checked;
+  mathConfig.negative = document.getElementById("allow-negative").checked;
+
+  document.getElementById("math-settings").classList.add("hidden");
+
+  startQuiz("math");
+}
+
+
+function showMathSettings() {
+
+  // Reset math config defaults every time
+  mathConfig = {
+    digits: 2,
+    decimals: false,
+    negative: false
+  };
+
+  document.querySelector(".hero").classList.add("hidden");
+  document.getElementById("mode-selection").classList.add("hidden");
+  document.getElementById("math-settings").classList.remove("hidden");
+}
+
+
+async function startQuiz(mode) {
+
+  aiReady = false;
+  index = 0;
+  score = 0;
+  userAnswers = [];
+
+  // STOP OLD TIMERS
+  clearInterval(timerInterval);
+  clearTimeout(funFactTimer);
+  clearTimeout(revealTimer);
+
+  // RESET TIMER
+  document.getElementById("timer").innerText = "⏱ 0s";
+
+  // RESET UI
+  document.querySelector(".hero").classList.add("hidden");
+  document.getElementById("mode-selection").classList.add("hidden");
+  document.getElementById("math-settings").classList.add("hidden");
+  document.getElementById("quiz-screen").classList.add("hidden");
+  document.getElementById("result-screen").classList.add("hidden");
+  document.getElementById("coming-soon").classList.add("hidden");
+
+  // SHOW LOADING
+  document.getElementById("loading-screen").classList.remove("hidden");
+
+  startFunFacts();
+
+  fetch("/questions", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      mode,
+      count: 10,
+      mathConfig
+    })
+  })
+  .then(res => res.json())
+  .then(aiData => {
+
+    if (aiData && aiData.length) {
+      aiReady = true;
+      stopFunFacts();
+
+      questions = aiData;
+      index = 0;
+
+      document.getElementById("loading-screen").classList.add("hidden");
+      document.getElementById("quiz-screen").classList.remove("hidden");
+
+      startTimer();
+      showQuestion();
+    }
+  });
+}
+
+
+

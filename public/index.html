@@ -27,7 +27,7 @@
   <h2>Choose Your Challenge</h2>
 
   <div class="mode-grid">
-    <div class="mode-card" onclick="startGame('math')">🧮 Math</div>
+    <div class="mode-card" onclick="showMathSettings()">🧮 Math</div>
     <div class="mode-card" onclick="startGame('logic')">🧠 Logic</div>
     <div class="mode-card" onclick="startGame('pattern')">🔷 Pattern</div>
     <div class="mode-card" onclick="startGame('word')">📖 Word</div>
@@ -59,7 +59,15 @@
   <h2 id="question"></h2>
 
   <div class="quiz-controls">
-    <input type="text" id="answer" placeholder="Your answer">
+    <input 
+  type="text" 
+  id="answer" 
+  placeholder="Your answer"
+  autocomplete="off"
+  autocorrect="off"
+  autocapitalize="off"
+  spellcheck="false"
+/>
     <button id="submit-btn" onclick="submitAnswer()">Submit</button>
   </div>
 
@@ -81,7 +89,47 @@
   <p>Please check back soon 😊</p>
 </section>
 
+<!-- MATH SETTINGS -->
+<section id="math-settings" class="hidden modes">
+
+  <h2>Customize Your Math Challenge 🧮</h2>
+
+  <div style="margin:20px">
+
+    <label>Select Difficulty:</label>
+    <br><br>
+
+    <select id="digit-select" style="padding:10px; font-size:16px;">
+      <option value="2">2 Digit Numbers</option>
+      <option value="3">3 Digit Numbers</option>
+      <option value="4">4 Digit Numbers</option>
+    </select>
+
+    <br><br>
+
+    <label>
+      <input type="checkbox" id="include-decimals">
+      Include Decimal Numbers
+    </label>
+
+    <br><br>
+
+    <label>
+      <input type="checkbox" id="allow-negative">
+      Allow Negative Answers
+    </label>
+
+    <br><br>
+
+    <button onclick="startMathWithSettings()">Start Quiz 🚀</button>
+
+  </div>
+
+</section>
+
+
 <script src="script.js"></script>
+
 
 </body>
 </html>
