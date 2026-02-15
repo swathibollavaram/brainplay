@@ -101,7 +101,10 @@ function submitAnswer() {
   const userAnswer = document.getElementById("answer").value.trim();
   userAnswers.push(userAnswer);
 
-  if (userAnswer == questions[index].answer) {
+  if (
+    userAnswer.trim().toLowerCase() ===
+    String(questions[index].answer).trim().toLowerCase()
+  ) {
     score++;
   }
 
@@ -113,6 +116,7 @@ function submitAnswer() {
     endQuiz();
   }
 }
+
 
 
 // ================= TIMER =================
@@ -163,7 +167,10 @@ function showReview() {
 
     const userAns = userAnswers[i];
     const correctAns = q.answer;
-    const isCorrect = userAns == correctAns;
+
+    const isCorrect =
+      String(userAns).trim().toLowerCase() ===
+      String(correctAns).trim().toLowerCase();
 
     const div = document.createElement("div");
     div.classList.add("review-item");
@@ -177,6 +184,7 @@ function showReview() {
     reviewSection.appendChild(div);
   });
 }
+
 
 
 // ================= NAVIGATION =================

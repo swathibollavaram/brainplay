@@ -53,7 +53,29 @@ Return ONLY JSON:
 
   // ================= LOGIC =================
   else if (mode === "logic") {
-    typePrompt = `VERY SIMPLE logical thinking questions for children aged 6–10.`;
+  typePrompt = `
+Generate VERY SIMPLE LOGIC questions for children aged 6–10.
+
+STRICT RULES:
+- DO NOT include numbers
+- DO NOT include math
+- Use comparison or real-world thinking
+- Questions must be one line
+
+IMPORTANT:
+For EVERY question you MUST include:
+- "question"
+- "answer"
+
+Answer must be ONE WORD only (Yes/No or object name).
+
+Return ONLY valid JSON in this format:
+
+[
+ {"question":"Is a lion stronger than a rabbit?","answer":"Yes"},
+ {"question":"Which is colder: ice or fire?","answer":"Ice"}
+]
+`;
   }
 
   // ================= PATTERN =================
