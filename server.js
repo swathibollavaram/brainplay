@@ -301,7 +301,42 @@ ${typePrompt}
       throw new Error("Invalid AI response");
     }
 
-    const questions = JSON.parse(raw.substring(start, end));
+    let questions = JSON.parse(raw.substring(start, end));
+
+console.log("🧹 Removing duplicate questions...");
+
+// Remove duplicates using Set
+const uniqueMap = new Map();
+
+questions.forEach(q => {
+  const key = q.question.trim().toLowerCase();
+  if (!uniqueMap.has(key)) {
+    uniqueMap.set(key, q);
+  }
+});
+
+questions = Array.from(uniqueMap.values());
+// Ensure minimum count after duplicate removal
+// Ensure minimum count after duplicate removal
+if (questions.length < count) {
+  console.log("⚠️ Less questions after duplicate removal. Filling...");
+
+  const original = JSON.parse(raw.substring(start, end));
+
+  for (let q of original) {
+    const key = q.question.trim().toLowerCase();
+    if (!uniqueMap.has(key)) {
+      uniqueMap.set(key, q);
+      questions.push(q);
+    }
+    if (questions.length >= count) break;
+  }
+}
+
+
+
+console.log("✅ Unique questions count:", questions.length);
+
 
     console.log("🎯 JSON parsing successful");
     console.log("📊 Total questions generated:", questions.length);
