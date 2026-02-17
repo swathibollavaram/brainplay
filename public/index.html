@@ -58,18 +58,27 @@
 
   <h2 id="question"></h2>
 
-  <div class="quiz-controls">
+<div class="quiz-controls">
+
+  <!-- TEXT INPUT (for Math / Pattern / Word) -->
+  <div id="text-answer-box">
     <input 
-  type="text" 
-  id="answer" 
-  placeholder="Your answer"
-  autocomplete="off"
-  autocorrect="off"
-  autocapitalize="off"
-  spellcheck="false"
-/>
+      type="text" 
+      id="answer" 
+      placeholder="Your answer"
+      autocomplete="off"
+      autocorrect="off"
+      autocapitalize="off"
+      spellcheck="false"
+    />
     <button id="submit-btn" onclick="submitAnswer()">Submit</button>
   </div>
+
+  <!-- MCQ OPTIONS (for Logic) -->
+  <div id="mcq-options" class="hidden"></div>
+
+</div>
+
 
 </section>
 

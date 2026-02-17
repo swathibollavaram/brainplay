@@ -207,3 +207,23 @@ body {
   border: none;
   font-size: 16px;
 }
+#mcq-options {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 20px;
+  width: 300px;
+}
+
+.mcq-option {
+  background: white;
+  color: black;
+  padding: 12px;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.mcq-option:hover {
+  background: #ffcc00;
+}

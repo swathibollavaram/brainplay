@@ -8,6 +8,7 @@ let funFacts = [];
 let funFactTimer = null;
 let revealTimer = null;
 let aiReady = false;
+let selectedOption = null;
 let mathConfig = {
   digits: 1,
   decimals: false,
@@ -91,23 +92,65 @@ function showQuestion() {
   document.getElementById("question").innerText =
     questions[index].question;
 
-  const answerBox = document.getElementById("answer");
-  answerBox.value = "";
+  const answerBox = document.getElementById("text-answer-box");
+  const mcqBox = document.getElementById("mcq-options");
 
-  setTimeout(() => {
-    answerBox.focus();
-  }, 100);
+  selectedOption = null;
+
+  // If Logic MCQ
+  if (questions[index].options) {
+
+    answerBox.classList.add("hidden");
+    mcqBox.classList.remove("hidden");
+
+    mcqBox.innerHTML = "";
+
+    questions[index].options.forEach(option => {
+
+      const div = document.createElement("div");
+      div.classList.add("mcq-option");
+      div.innerText = option;
+
+      div.onclick = () => {
+        selectedOption = option;
+        submitAnswer();
+      };
+
+      mcqBox.appendChild(div);
+    });
+
+  } else {
+
+    mcqBox.classList.add("hidden");
+    answerBox.classList.remove("hidden");
+
+    const answerInput = document.getElementById("answer");
+    answerInput.value = "";
+
+    setTimeout(() => {
+      answerInput.focus();
+    }, 100);
+  }
 }
+
 
 
 // ================= SUBMIT =================
 function submitAnswer() {
 
-  const userAnswer = document.getElementById("answer").value.trim();
+  let userAnswer;
+
+  if (questions[index].options) {
+    userAnswer = selectedOption;
+  } else {
+    userAnswer = document.getElementById("answer").value.trim();
+  }
+
   userAnswers.push(userAnswer);
 
   if (
-    userAnswer.trim().toLowerCase() ===
+    userAnswer &&
+    userAnswer.toString().trim().toLowerCase() ===
     String(questions[index].answer).trim().toLowerCase()
   ) {
     score++;
@@ -121,6 +164,7 @@ function submitAnswer() {
     endQuiz();
   }
 }
+
 
 
 
@@ -194,9 +238,19 @@ function showReview() {
 
 // ================= NAVIGATION =================
 function showModeSelection() {
+
   document.querySelector(".hero").classList.add("hidden");
+
   document.getElementById("mode-selection").classList.remove("hidden");
+
+  // ✅ ADD THESE (important reset)
+  document.getElementById("math-settings").classList.add("hidden");
+  document.getElementById("quiz-screen").classList.add("hidden");
+  document.getElementById("result-screen").classList.add("hidden");
+  document.getElementById("loading-screen").classList.add("hidden");
+  document.getElementById("coming-soon").classList.add("hidden");
 }
+
 
 function goHome() {
 
@@ -210,12 +264,17 @@ function goHome() {
   document.getElementById("loading-screen").classList.add("hidden");
   document.getElementById("coming-soon").classList.add("hidden");
 
+  // ✅ ADD THIS
+  document.getElementById("math-settings").classList.add("hidden");
+
   document.getElementById("timer").innerText = "⏱ 0s";
 
   index = 0;
   score = 0;
   userAnswers = [];
 }
+
+
 
 function showComingSoon() {
 
@@ -287,19 +346,26 @@ function startMathWithSettings() {
 
 function showMathSettings() {
 
-  // Reset math config defaults every time
   mathConfig = {
-  digits: 1,
-  decimals: false,
-  negative: false,
-  operators: ["+", "-", "*", "/"]
-};
+    digits: 1,
+    decimals: false,
+    negative: false,
+    mixed: false,
+    operators: ["+", "-", "*", "/"]
+  };
 
+  // reset UI selections
+  document.querySelectorAll(".operator").forEach(cb => cb.checked = false);
+  document.getElementById("include-decimals").checked = false;
+  document.getElementById("allow-negative").checked = false;
+  document.getElementById("allow-mixed").checked = false;
+  document.getElementById("digit-select").value = "1";
 
   document.querySelector(".hero").classList.add("hidden");
   document.getElementById("mode-selection").classList.add("hidden");
   document.getElementById("math-settings").classList.remove("hidden");
 }
+
 
 
 async function startQuiz(mode) {

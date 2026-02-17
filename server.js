@@ -79,30 +79,47 @@ Return ONLY JSON:
 
   // ================= LOGIC =================
   else if (mode === "logic") {
+
   typePrompt = `
-Generate VERY SIMPLE LOGIC questions for children aged 6–10.
+Generate VERY SIMPLE logical thinking MCQ questions for children aged 6–10.
 
 STRICT RULES:
-- DO NOT include numbers
-- DO NOT include math
-- Use comparison or real-world thinking
-- Questions must be one line
 
-IMPORTANT:
-For EVERY question you MUST include:
-- "question"
-- "answer"
+Each question MUST have:
+- question
+- 4 options
+- 1 correct answer
 
-Answer must be ONE WORD only (Yes/No or object name).
-
-Return ONLY valid JSON in this format:
+Format MUST be:
 
 [
- {"question":"Is a lion stronger than a rabbit?","answer":"Yes"},
- {"question":"Which is colder: ice or fire?","answer":"Ice"}
+ {
+   "question": "Which is bigger?",
+   "options": ["Ant", "Elephant", "Cat", "Rat"],
+   "answer": "Elephant"
+ }
 ]
+
+Guidelines:
+- Use daily life examples
+- Keep questions short
+- Answers must be from options
+- No maths questions
+- No riddles
+- No explanation
+
+Examples of question types:
+
+Which is heavier?
+Which comes first?
+Which is faster?
+Which is bigger?
+Which is used for writing?
+
+Return ONLY JSON.
 `;
-  }
+}
+
 
   // ================= PATTERN =================
 else if (mode === "pattern") {
