@@ -188,3 +188,22 @@ body {
   border-radius: 8px;
   border: none;
 }
+.math-box {
+  background: rgba(255,255,255,0.15);
+  padding: 30px;
+  border-radius: 15px;
+  display: inline-block;
+  text-align: left;
+}
+
+.math-box h3 {
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+
+.math-box select {
+  padding: 8px;
+  border-radius: 8px;
+  border: none;
+  font-size: 16px;
+}

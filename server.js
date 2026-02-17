@@ -23,24 +23,49 @@ app.post("/questions", async (req, res) => {
 
     console.log("🧮 Math Config:", mathConfig);
 
-    const digits = mathConfig.digits || 2;
-    const decimals = mathConfig.decimals;
-    const negative = mathConfig.negative;
+const digits = mathConfig.digits || 1;
+const decimals = mathConfig.decimals;
+const negative = mathConfig.negative;
+const mixed = mathConfig.mixed;
+const operators = mathConfig.operators || ["+", "-", "*", "/"];
 
-    let rangeText = "";
+let rangeText = "";
+if (digits == 1) rangeText = "Use numbers from 0 to 9";
+if (digits == 2) rangeText = "Use numbers from 10 to 99";
+if (digits == 3) rangeText = "Use numbers from 100 to 999";
+if (digits == 4) rangeText = "Use numbers from 1000 to 9999";
 
-    if (digits == 2) rangeText = "Use numbers from 10 to 99";
-    if (digits == 3) rangeText = "Use numbers from 100 to 999";
-    if (digits == 4) rangeText = "Use numbers from 1000 to 9999";
-
-    typePrompt = `
+typePrompt = `
 Generate arithmetic questions for children.
 
 Rules:
 - ${rangeText}
-- Use operators: +, -, *, /
+- Use ONLY these operators: ${operators.join(", ")}
 - ${decimals ? "Include decimal numbers sometimes" : "Use whole numbers only"}
 - ${negative ? "Allow negative answers" : "Do NOT allow negative answers"}
+
+${mixed ? 
+`
+MUST generate questions with TWO operations.
+Each question MUST contain exactly TWO operators.
+
+Examples:
+3 + 4 - 1
+6 * 2 + 3
+8 / 2 * 3
+
+DO NOT generate single-operation questions.
+DO NOT generate more than two operations.
+DO NOT generate questions with only one number.
+`
+:
+`
+Each question MUST contain exactly ONE operator.
+Do NOT generate multiple operations.
+Do NOT generate questions with only one number.
+`
+}
+
 - Keep questions simple and child-friendly
 - One line questions only
 
@@ -50,6 +75,7 @@ Return ONLY JSON:
 ]
 `;
   }
+
 
   // ================= LOGIC =================
   else if (mode === "logic") {

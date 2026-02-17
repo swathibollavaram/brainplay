@@ -94,36 +94,55 @@
 
   <h2>Customize Your Math Challenge 🧮</h2>
 
-  <div style="margin:20px">
+<div class="math-box">
 
-    <label>Select Difficulty:</label>
-    <br><br>
+  <!-- STEP 1 -->
+  <h3>Step 1: Choose What To Practice</h3>
 
-    <select id="digit-select" style="padding:10px; font-size:16px;">
-      <option value="2">2 Digit Numbers</option>
-      <option value="3">3 Digit Numbers</option>
-      <option value="4">4 Digit Numbers</option>
-    </select>
+  <label><input type="checkbox" class="operator" value="+"> Addition</label><br>
+  <label><input type="checkbox" class="operator" value="-"> Subtraction</label><br>
+  <label><input type="checkbox" class="operator" value="*"> Multiplication</label><br>
+  <label><input type="checkbox" class="operator" value="/"> Division</label>
 
-    <br><br>
+  <br><br>
 
-    <label>
-      <input type="checkbox" id="include-decimals">
-      Include Decimal Numbers
-    </label>
+  <!-- STEP 2 -->
+  <h3>Step 2: Choose Number Size</h3>
 
-    <br><br>
+  <select id="digit-select">
+    <option value="1">1 Digit Numbers</option>
+    <option value="2">2 Digit Numbers</option>
+    <option value="3">3 Digit Numbers</option>
+    <option value="4">4 Digit Numbers</option>
+  </select>
 
-    <label>
-      <input type="checkbox" id="allow-negative">
-      Allow Negative Answers
-    </label>
+  <br><br>
 
-    <br><br>
+  <!-- STEP 3 -->
+  <h3>Step 3: Advanced Options</h3>
 
-    <button onclick="startMathWithSettings()">Start Quiz 🚀</button>
+  <label>
+    <input type="checkbox" id="include-decimals">
+    Include Decimal Numbers
+  </label>
+  <br>
+  <label>
+    <input type="checkbox" id="allow-negative">
+    Allow Negative Answers
+  </label>
+  <br>
+  <label>
+  <input type="checkbox" id="allow-mixed">
+  Allow Mixed Operations (e.g. 3 + 4 - 1)
+</label>
 
-  </div>
+
+  <br><br>
+
+  <button onclick="startMathWithSettings()">Start Quiz 🚀</button>
+
+</div>
+
 
 </section>
 

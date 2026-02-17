@@ -9,10 +9,15 @@ let funFactTimer = null;
 let revealTimer = null;
 let aiReady = false;
 let mathConfig = {
-  digits: 2,
+  digits: 1,
   decimals: false,
-  negative: false
+  negative: false,
+  mixed: false,
+  operators: ["+", "-", "*", "/"]
 };
+
+
+
 
 
 
@@ -260,9 +265,18 @@ document.addEventListener("DOMContentLoaded", () => {
 
 function startMathWithSettings() {
 
-  mathConfig.digits = parseInt(document.getElementById("digit-select").value) || 2;
+  mathConfig.digits = parseInt(document.getElementById("digit-select").value) || 1;
   mathConfig.decimals = document.getElementById("include-decimals").checked;
   mathConfig.negative = document.getElementById("allow-negative").checked;
+  mathConfig.mixed = document.getElementById("allow-mixed").checked;
+
+
+
+  // GET SELECTED OPERATORS
+  const selectedOps = Array.from(document.querySelectorAll(".operator:checked"))
+                          .map(op => op.value);
+
+  mathConfig.operators = selectedOps.length ? selectedOps : ["+", "-", "*", "/"];
 
   document.getElementById("math-settings").classList.add("hidden");
 
@@ -270,14 +284,17 @@ function startMathWithSettings() {
 }
 
 
+
 function showMathSettings() {
 
   // Reset math config defaults every time
   mathConfig = {
-    digits: 2,
-    decimals: false,
-    negative: false
-  };
+  digits: 1,
+  decimals: false,
+  negative: false,
+  operators: ["+", "-", "*", "/"]
+};
+
 
   document.querySelector(".hero").classList.add("hidden");
   document.getElementById("mode-selection").classList.add("hidden");
